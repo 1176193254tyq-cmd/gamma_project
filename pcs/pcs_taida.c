@@ -273,7 +273,11 @@ static void Taida_DataProcess(unsigned char *ptr, int num)
                 else if ((num == 0) && (index == Master1_Taida_System_State3))
                 {
                     INT16U merge_value;
-
+                    uint8_t pcs3_stat = Get_PCS_Comm(1);
+                    if (pcs3_stat == IsFault)
+                    {
+                        Slave2_sys_state2 = 0;
+                    }
                     merge_value = Merge_Bit8_To_Bit13(RegVal.D16, Slave1_sys_state2);
                     merge_value &= ~(1U << 14);   // 先清除 bit14
 
@@ -285,7 +289,11 @@ static void Taida_DataProcess(unsigned char *ptr, int num)
                 else if ((num == 2) && (index == Master2_Taida_System_State3))
                 {
                     INT16U merge_value;
-
+                    uint8_t pcs3_stat = Get_PCS_Comm(3);
+                    if (pcs3_stat == IsFault)
+                    {
+                        Slave2_sys_state2 = 0;
+                    }
                     merge_value = Merge_Bit8_To_Bit13(RegVal.D16, Slave2_sys_state2);
                     merge_value &= ~(1U << 14);   // 先清除 bit14
 
