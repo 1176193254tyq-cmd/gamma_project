@@ -332,7 +332,7 @@ int main(int argc, char* argv[])
     g_last_nvme_state = Is_MountPoint_Mounted(NVME_MOUNT_POINT);
 
     log_Init();
-    LOG_INFO("本地控制器启动!!");
+    LOG_INFO("本地控制器启动!!!V01R01C01SPC105");
 
     // led_on();
     //读取配置文件init的内容 Read the contents of the configuration file init
