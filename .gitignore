@@ -1,0 +1,33 @@
+# CMake编译目录
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+
+# C/C++中间文件
+*.o
+*.obj
+*.d
+*.gcno
+*.gcda
+
+# 调试和临时文件
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# 数据库文件
+*.db
+*.db-shm
+*.db-wal
+
+# VS Code本地配置
+.vscode/
+
+# 系统生成文件
+.DS_Store
+Thumbs.db
