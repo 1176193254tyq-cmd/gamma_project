@@ -30,6 +30,7 @@ int First_Flag[2]={1,1};//记录第一次写入的标志，一个MV有两个系�
 char LogStr[100] = {0};
 int Heart_PCS_Num;//用于记录心跳时候PCS的编号
 MV_Q_Result reactive_power; 
+MV_Power_Distribution g_MV_Power;
 static uint8_t  init_power_flag=0;
 extern volatile BOOLEAN Set_Time_Flag;//用于记录是否设置时间标志
 /*********************** */
@@ -2832,16 +2833,17 @@ void MV_Power_allocate1(void)
 
 
 //LOG_INFO("state[0]:%d,state[1]；%d,getinput:%d,(GET_INPUT(29271):%d,(GET_INPUT(29471):%d", state[0], state[1],GET_INPUT(17062),GET_INPUT(29271),GET_INPUT(29471));
- MV_ReactivePowerControl_A(
-        GET_HOLD(1011),
+//  MV_ReactivePowerControl_A(
+//         GET_HOLD(1011),
 
-        GET_INPUT(2600+300*0+18),
-        GET_INPUT(2600+300*1+18),
+//         GET_INPUT(2600+300*0+18),
+//         GET_INPUT(2600+300*1+18),
 
-        GET_INPUT(2600+300*2+18),
-        GET_INPUT(2600+300*3+18),
+//         GET_INPUT(2600+300*2+18),
+//         GET_INPUT(2600+300*3+18),
 
-        &reactive_power);
+//         &reactive_power);
+    MV_PQ_Control_B(  GET_HOLD(1011), &g_MV_Power,&reactive_power);
 // LOG_INFO("group1 无功 ：%d,group2 无功：%d",reactive_power.group1_q_cmd,reactive_power.group2_q_cmd);
 
 
