@@ -172,8 +172,7 @@ static void MV_CalcGroupActivePower(
  *
  * Slave系数 = 1000 - Master系数
  */
-static void MV_CalcPCSActivePower(
-        MV_Power_Distribution *result)
+static void MV_CalcPCSActivePower( MV_Power_Distribution *result)
 {
     uint32_t temp_coef;
 
@@ -184,34 +183,19 @@ static void MV_CalcPCSActivePower(
 
     /* ---------------- Group1 ---------------- */
 
-    result->group1_total_p =
-        (int16_t)((uint16_t)GET_HOLD(27000 + 52));
+    result->group1_total_p =(int16_t)((uint16_t)GET_HOLD(27000 + 52));
 
-    temp_coef =
-        (uint32_t)GET_HOLD(27000 + 50)
-        +
-        (uint32_t)GET_HOLD(27000 + 46);
+    temp_coef = (uint32_t)GET_HOLD(27000 + 50)+(uint32_t)GET_HOLD(27000 + 46);
 
-    result->group1_master_discharge_coef =
-        MV_LimitPowerCoef(temp_coef);
+    result->group1_master_discharge_coef =MV_LimitPowerCoef(temp_coef);
 
-    result->group1_slave_discharge_coef =
-        PCS_POWER_COEF_BASE
-        -
-        result->group1_master_discharge_coef;
+    result->group1_slave_discharge_coef =PCS_POWER_COEF_BASE-result->group1_master_discharge_coef;
 
-    temp_coef =
-        (uint32_t)GET_HOLD(27000 + 51)
-        +
-        (uint32_t)GET_HOLD(27000 + 48);
+    temp_coef =(uint32_t)GET_HOLD(27000 + 51)+(uint32_t)GET_HOLD(27000 + 48);
 
-    result->group1_master_charge_coef =
-        MV_LimitPowerCoef(temp_coef);
+    result->group1_master_charge_coef = MV_LimitPowerCoef(temp_coef);
 
-    result->group1_slave_charge_coef =
-        PCS_POWER_COEF_BASE
-        -
-        result->group1_master_charge_coef;
+    result->group1_slave_charge_coef = PCS_POWER_COEF_BASE - result->group1_master_charge_coef;
 
     MV_CalcGroupActivePower(
         result->group1_total_p,
@@ -223,34 +207,19 @@ static void MV_CalcPCSActivePower(
 
     /* ---------------- Group2 ---------------- */
 
-    result->group2_total_p =
-        (int16_t)((uint16_t)GET_HOLD(27000 + 300 + 52));
+    result->group2_total_p = (int16_t)((uint16_t)GET_HOLD(27000 + 300 + 52));
 
-    temp_coef =
-        (uint32_t)GET_HOLD(27000 + 300 + 50)
-        +
-        (uint32_t)GET_HOLD(27000 + 300 + 46);
+    temp_coef =(uint32_t)GET_HOLD(27000 + 300 + 50)+(uint32_t)GET_HOLD(27000 + 300 + 46);
 
-    result->group2_master_discharge_coef =
-        MV_LimitPowerCoef(temp_coef);
+    result->group2_master_discharge_coef =MV_LimitPowerCoef(temp_coef);
 
-    result->group2_slave_discharge_coef =
-        PCS_POWER_COEF_BASE
-        -
-        result->group2_master_discharge_coef;
+    result->group2_slave_discharge_coef =PCS_POWER_COEF_BASE-result->group2_master_discharge_coef;
 
-    temp_coef =
-        (uint32_t)GET_HOLD(27000 + 300 + 51)
-        +
-        (uint32_t)GET_HOLD(27000 + 300 + 48);
+    temp_coef =(uint32_t)GET_HOLD(27000 + 300 + 51)+(uint32_t)GET_HOLD(27000 + 300 + 48);
 
-    result->group2_master_charge_coef =
-        MV_LimitPowerCoef(temp_coef);
+    result->group2_master_charge_coef = MV_LimitPowerCoef(temp_coef);
 
-    result->group2_slave_charge_coef =
-        PCS_POWER_COEF_BASE
-        -
-        result->group2_master_charge_coef;
+    result->group2_slave_charge_coef =PCS_POWER_COEF_BASE-result->group2_master_charge_coef;
 
     MV_CalcGroupActivePower(
         result->group2_total_p,
@@ -277,9 +246,7 @@ static void MV_CalcPCSActivePower(
  *
  * 当前容量计算只依据bit8、bit9。
  */
-static void PCS_ParseBranchStatus(
-        uint16_t status,
-        PCS_Branch_Status *branch)
+static void PCS_ParseBranchStatus(uint16_t status,PCS_Branch_Status *branch)
 {
     if (branch == 0)
     {
@@ -311,9 +278,7 @@ static void PCS_ParseBranchStatus(
  * 单支路运行  -> 1250kVA
  * 无支路运行  -> 0kVA
  */
-static float PCS_GetRatedPowerByBranch(
-        PCS_Branch_Status *branch,
-        uint16_t *run_branch_num)
+static float PCS_GetRatedPowerByBranch(PCS_Branch_Status *branch,uint16_t *run_branch_num)
 {
     uint16_t num;
 
@@ -322,10 +287,7 @@ static float PCS_GetRatedPowerByBranch(
         return PCS_RATED_S_ZERO_KVA;
     }
 
-    num =
-        branch->branch1_run
-        +
-        branch->branch2_run;
+    num =branch->branch1_run+branch->branch2_run;
 
     *run_branch_num = num;
 
@@ -432,65 +394,39 @@ static void MV_Q_ReadPCSInfo(
     /* PCS1：Group1 Master */
     pcs_state = (uint16_t)GET_INPUT(17061);
 
-    PCS_ParseBranchStatus(
-        pcs_state,
-        &master1->branch);
+    PCS_ParseBranchStatus( pcs_state, &master1->branch);
 
-    master1->rated_s_kva =
-        PCS_GetRatedPowerByBranch(
-            &master1->branch,
-            &master1->run_branch_num);
+    master1->rated_s_kva =PCS_GetRatedPowerByBranch( &master1->branch, &master1->run_branch_num);
 
-    master1->p_kw =
-        MV_U16ToSignedFloat(master1_p_raw);
-
-
+    master1->p_kw =MV_U16ToSignedFloat(master1_p_raw);
     /* PCS2：Group1 Slave */
     pcs_state = (uint16_t)GET_INPUT(17062);
 
-    PCS_ParseBranchStatus(
-        pcs_state,
-        &slave1->branch);
+    PCS_ParseBranchStatus(pcs_state,&slave1->branch);
 
-    slave1->rated_s_kva =
-        PCS_GetRatedPowerByBranch(
-            &slave1->branch,
-            &slave1->run_branch_num);
+    slave1->rated_s_kva =PCS_GetRatedPowerByBranch(&slave1->branch,&slave1->run_branch_num);
 
-    slave1->p_kw =
-        MV_U16ToSignedFloat(slave1_p_raw);
+    slave1->p_kw =MV_U16ToSignedFloat(slave1_p_raw);
 
 
     /* PCS3：Group2 Master */
     pcs_state = (uint16_t)GET_INPUT(17361);
 
-    PCS_ParseBranchStatus(
-        pcs_state,
-        &master2->branch);
+    PCS_ParseBranchStatus(pcs_state,&master2->branch);
 
-    master2->rated_s_kva =
-        PCS_GetRatedPowerByBranch(
-            &master2->branch,
-            &master2->run_branch_num);
+    master2->rated_s_kva =PCS_GetRatedPowerByBranch(&master2->branch,&master2->run_branch_num);
 
-    master2->p_kw =
-        MV_U16ToSignedFloat(master2_p_raw);
+    master2->p_kw =MV_U16ToSignedFloat(master2_p_raw);
 
 
     /* PCS4：Group2 Slave */
     pcs_state = (uint16_t)GET_INPUT(17362);
 
-    PCS_ParseBranchStatus(
-        pcs_state,
-        &slave2->branch);
+    PCS_ParseBranchStatus(pcs_state,&slave2->branch);
 
-    slave2->rated_s_kva =
-        PCS_GetRatedPowerByBranch(
-            &slave2->branch,
-            &slave2->run_branch_num);
+    slave2->rated_s_kva =PCS_GetRatedPowerByBranch(&slave2->branch,&slave2->run_branch_num);
 
-    slave2->p_kw =
-        MV_U16ToSignedFloat(slave2_p_raw);
+    slave2->p_kw =MV_U16ToSignedFloat(slave2_p_raw);
 }
 
 
@@ -637,23 +573,13 @@ static void MV_ReactivePowerControl_Common(
         &master2,
         &slave2);
 
-    group1_q_max =
-        MV_Q_CalcGroupMax(
-            &master1,
-            &slave1,
-            &available1);
+    group1_q_max = MV_Q_CalcGroupMax(&master1,&slave1,&available1);
 
-    group2_q_max =
-        MV_Q_CalcGroupMax(
-            &master2,
-            &slave2,
-            &available2);
+    group2_q_max =MV_Q_CalcGroupMax(&master2,&slave2,&available2);
 
-    result->group1_q_max =
-        MV_PositiveFloatToU16(group1_q_max);
+    result->group1_q_max =MV_PositiveFloatToU16(group1_q_max);
 
-    result->group2_q_max =
-        MV_PositiveFloatToU16(group2_q_max);
+    result->group2_q_max =MV_PositiveFloatToU16(group2_q_max);
 
     result->group1_q_available_num = available1;
     result->group2_q_available_num = available2;

@@ -743,6 +743,12 @@ void* Pcs_Taida_Write_Task(void *arg)
                             pthread_mutex_unlock(&g_mv_alloc_call_mtx);
                         }
                     }
+                    // else
+                    // {
+                    //             SET_INPUT(17000 + 300 * 0 + 31, 0u);
+                    //             SET_INPUT(17000 + 300 * 1 + 31, 0u);
+                    //             SET_INPUT(117, 0u);
+                    // }
                         
                 }    
                     loop++;

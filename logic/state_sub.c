@@ -1411,6 +1411,34 @@ if (ret == 6)
         SET_INPUT(High_voltage_switch_status,0xAA);
     }
 
+    uint8_t PCS1bus1 =
+        (uint16_t)((GET_INPUT(17061) >> 8) & 0x1u);
+
+    uint8_t PCS1bus2 =
+        (uint16_t)((GET_INPUT(17061) >> 9) & 0x1u);
+
+    uint8_t PCS2bus1 =
+        (uint16_t)((GET_INPUT(17062) >> 8) & 0x1u);
+
+    uint8_t PCS2bus2 =
+        (uint16_t)((GET_INPUT(17062) >> 9) & 0x1u);
+
+    uint8_t PCS3bus1 =
+        (uint16_t)((GET_INPUT(17361) >> 8) & 0x1u);
+
+    uint8_t PCS3bus2 =
+        (uint16_t)((GET_INPUT(17361) >> 9) & 0x1u);
+    uint8_t PCS4bus1 =
+        (uint16_t)((GET_INPUT(17062) >> 8) & 0x1u);
+
+    uint8_t PCS4bus2 =
+        (uint16_t)((GET_INPUT(17062) >> 9) & 0x1u);
+    if((PCS1bus1!=1)&&(PCS1bus2!=1)&&(PCS2bus1!=1)&&(PCS2bus2!=1)&&(PCS3bus1!=1)&&(PCS3bus2!=1)&&(PCS4bus1!=1)&&(PCS4bus2!=1))
+    {
+        SET_INPUT(17000 + 300 * 0 + 31, 0u);
+        SET_INPUT(17000 + 300 * 1 + 31, 0u);
+        SET_INPUT(117, 0u);
+    }
 }
 
 static void Event_CMD_Lim_Check(INT16U *eid, INT8U sys_num, INT8U sub_num, SUB_State_ENUM real_state)
@@ -2271,6 +2299,34 @@ if (ret == 6)
     SET_INPUT(17000 + 300 * 0 + 33, PCS_Status_To_RegValue(PCS2_status));
     SET_INPUT(17000 + 300 * 1 + 32, PCS_Status_To_RegValue(PCS3_status));
     SET_INPUT(17000 + 300 * 1 + 33, PCS_Status_To_RegValue(PCS4_status));
+    uint8_t PCS1bus1 =
+        (uint16_t)((GET_INPUT(17061) >> 8) & 0x1u);
+
+    uint8_t PCS1bus2 =
+        (uint16_t)((GET_INPUT(17061) >> 9) & 0x1u);
+
+    uint8_t PCS2bus1 =
+        (uint16_t)((GET_INPUT(17062) >> 8) & 0x1u);
+
+    uint8_t PCS2bus2 =
+        (uint16_t)((GET_INPUT(17062) >> 9) & 0x1u);
+
+    uint8_t PCS3bus1 =
+        (uint16_t)((GET_INPUT(17361) >> 8) & 0x1u);
+
+    uint8_t PCS3bus2 =
+        (uint16_t)((GET_INPUT(17361) >> 9) & 0x1u);
+    uint8_t PCS4bus1 =
+        (uint16_t)((GET_INPUT(17062) >> 8) & 0x1u);
+
+    uint8_t PCS4bus2 =
+        (uint16_t)((GET_INPUT(17062) >> 9) & 0x1u);
+    if((PCS1bus1!=1)&&(PCS1bus2!=1)&&(PCS2bus1!=1)&&(PCS2bus2!=1)&&(PCS3bus1!=1)&&(PCS3bus2!=1)&&(PCS4bus1!=1)&&(PCS4bus2!=1))
+    {
+        SET_INPUT(17000 + 300 * 0 + 31, 0u);
+        SET_INPUT(17000 + 300 * 1 + 31, 0u);
+        SET_INPUT(117, 0u);
+    }
 }
 
 void SUB_State_Run(volatile SUB_State_ENUM *state, INT8U sys_num, INT8U sub_num)
