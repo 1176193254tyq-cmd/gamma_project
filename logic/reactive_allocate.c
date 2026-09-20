@@ -4,25 +4,7 @@
 #include "main.h"
 #include "reactive_allocate.h"
 
-/*
- * A/B方案绝大多数计算完全一致：
- *
- * 1. Group总有功 + 充放电系数 -> PCS1~PCS4计划有功
- * 2. PCS支路状态 -> PCS有效容量 2500/1250/0
- * 3. Qmax = sqrt(S^2 - P^2)
- * 4. Group Qmax = 两台可用PCS Qmax之和
- * 5. 两个Group取较小能力作为均衡上限
- *
- * A/B唯一控制差异：
- *
- * A：Group仅剩1台PCS可用时，Group Q设置值×2；
- * B：不做×2，两个Group Q设置值保持相同。
- */
 
-
-/************************************************************
- * 公共基础函数
- ************************************************************/
 
 static float MV_U16ToSignedFloat(uint16_t raw)
 {
@@ -90,10 +72,6 @@ static float MV_Q_Limit(
 }
 
 
-/************************************************************
- * 公共有功分配
- ************************************************************/
-
 static uint16_t MV_LimitPowerCoef(uint32_t coef)
 {
     if (coef > PCS_POWER_COEF_BASE)
@@ -105,13 +83,6 @@ static uint16_t MV_LimitPowerCoef(uint32_t coef)
 }
 
 
-/*
- * group_p_set > 0：放电
- * group_p_set < 0：充电
- *
- * Slave直接使用 Group - Master，
- * 保证 Master + Slave == Group，避免整数除法累计误差。
- */
 static void MV_CalcGroupActivePower(
         int16_t group_p_set,
         uint16_t master_discharge_coef,
@@ -154,7 +125,7 @@ static void MV_CalcGroupActivePower(
 
 
 /*
- * A/B共用的有功分配：
+ * 
  *
  * Group1总有功：
  *      GET_HOLD(27000 + 52)
@@ -230,9 +201,6 @@ static void MV_CalcPCSActivePower( MV_Power_Distribution *result)
 }
 
 
-/************************************************************
- * 公共PCS支路状态与容量判断
- ************************************************************/
 
 /*
  * 状态寄存器：
@@ -305,13 +273,7 @@ static float PCS_GetRatedPowerByBranch(PCS_Branch_Status *branch,uint16_t *run_b
 }
 
 
-/*
- * 当前两份方案代码最终都可以统一为：
- * rated_s_kva > 0 即认为PCS能够参与无功。
- *
- * 原方案B中的run是由bit8/bit9派生，fault固定为0，
- * BMS判断处于注释状态，因此与这里的结果一致。
- */
+
 static uint16_t PCS_Q_IsAvailable(float rated_s_kva)
 {
     if (rated_s_kva <= 0.0f)
@@ -323,9 +285,6 @@ static uint16_t PCS_Q_IsAvailable(float rated_s_kva)
 }
 
 
-/************************************************************
- * 公共无功能力计算
- ************************************************************/
 
 static float PCS_CalcQMax(
         float p_kw,
@@ -364,7 +323,7 @@ static float PCS_CalcQMax(
 
 
 /*
- * A/B共用PCS状态读取：
+ * 
  *
  * PCS1：17061
  * PCS2：17062
@@ -485,9 +444,6 @@ static float MV_Q_CalcGroupMax(
 }
 
 
-/************************************************************
- * A/B差异：单PCS运行时Group Q设置值是否×2
- ************************************************************/
 
 /*
  * single_pcs_double_enable = 1：
@@ -527,9 +483,7 @@ static float MV_Q_CalcGroupCmd(
 }
 
 
-/************************************************************
- * A/B共用无功控制主体
- ************************************************************/
+
 
 static void MV_ReactivePowerControl_Common(
         uint16_t total_q_cmd,
@@ -626,7 +580,7 @@ static void MV_ReactivePowerControl_Common(
         MV_PositiveFloatToU16(balance_q_max);
 
     /*
-     * 用户总无功按int16_t补码解析，
+     * 
      * 两个Group实际目标各承担一半。
      */
     total_q_float =
@@ -640,9 +594,6 @@ static void MV_ReactivePowerControl_Common(
             group_q_target,
             balance_q_max);
 
-    /*
-     * 两个方案在这里才产生差异。
-     */
     group1_q_cmd =
         MV_Q_CalcGroupCmd(
             group_q_target,

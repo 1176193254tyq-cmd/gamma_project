@@ -496,7 +496,7 @@ static int PCS_Power(int socket_fd, const int pcs_num,const int sub_num)
     LOG_INFO("有功清零");
     Modbus_TCP_Write06_SingleRegist(socket_fd,PCS_Taida_SLAVE_ADDR, PCS_Taida_REPower_addr, 0 , CMD_DELAY_20); 
     LOG_INFO("无功清零");
-    return;
+    return 0;
 }
 /**
  * @brief 台达PCS设备通讯任务线程

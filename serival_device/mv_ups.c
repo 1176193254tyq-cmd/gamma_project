@@ -1,5 +1,3 @@
-
-
 #include "main.h"
 
 
@@ -93,30 +91,57 @@ if(p1->cmd_type==0x03)
  Set_UPS_Comm(0, IsNoFault); 
 
 
-for(int i=0 ;i<p1->register_num;i++)
+for (int i = 0; i < p1->register_num; i++)
 {
+    RegVal.D16 = p1->register_value[i];
 
+    // 按照对外协议点表转换地址
+    index = UPS_INPUT_INDEX(p1->register_addr + i);
 
-RegVal.D16 = p1->register_value[i];
+    if (index == 27113)
+    {
+        // UPS模式高低字节交换
+        RegVal.D16 = (INT16U)((RegVal.D16 << 8) |
+                             (RegVal.D16 >> 8));
 
-   // LOG_INFO("addr is %d,value is %d",p1->register_addr+i,RegVal.D16);
+        SET_INPUT(index, RegVal.D16);
+    }
+    else if (index == 27109)
+    {
+        // 清除收到的bit11
+        RegVal.D16 &= (INT16U)~(1U << 11);
 
-index= UPS_INPUT_INDEX(p1->register_addr+i);//按照对外协议点表
-//特殊处理UPS模式，UPS厂家给的是反的，需要转换
-if(index==27113)
-{
-RegVal.D16 = (INT16U)((RegVal.D16 << 8) | (RegVal.D16 >> 8));
+        // 保留本地由27131映射过来的bit11
+        RegVal.D16 |= GET_INPUT(27109) & (1U << 11);
 
- SET_INPUT(index, RegVal.D16);
+        SET_INPUT(index, RegVal.D16);
+       //  LOG_INFO("index:%d, value:%d\n", index, RegVal.D16);
+    }
+    else if (index == 27131)
+    {
+        if ((RegVal.D16 & (1U << 11)) != 0U)
+        {
+            // 收到的bit11为1，将27109的bit11置1
+            SET_INPUT(27109, GET_INPUT(27109) | (1U << 11));
+        }
+        else
+        {
+            // 收到的bit11为0，将27109的bit11清零
+            SET_INPUT(27109,
+                      GET_INPUT(27109) & (INT16U)~(1U << 11));
+        }
 
-// LOG_INFO("RegVal.D16 is %d",RegVal.D16);
-}
-else
-{
-    SET_INPUT(index, RegVal.D16);
-}
-//LOG_INFO("temp.D16 is %d,RegVal.D16 is %d,index is %d",p1->register_addr,p1->register_value[i],index);
+        // 清除bit11后再存入27131
+        RegVal.D16 &= (INT16U)~(1U << 11);
 
+        SET_INPUT(index, RegVal.D16);
+        // LOG_INFO("index:%d, value:%d\n", index, RegVal.D16);
+    }
+    else
+    {
+        SET_INPUT(index, RegVal.D16);
+        //LOG_INFO("index:%d, value:%d\n", index, RegVal.D16);
+    }
 }
 
 
@@ -128,7 +153,3 @@ else
 
 
 }
-
-
-
-
