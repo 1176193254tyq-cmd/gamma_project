@@ -694,7 +694,7 @@ void* Pcs_Taida_Write_Task(void *arg)
         server_addr.sin_family = AF_INET;
         server_addr.sin_port   = htons(sys_cfg->pcs_port[pcs_num]);
         server_addr.sin_addr.s_addr = inet_addr((char *)sys_cfg->pcs_ip[pcs_num]);
-        struct timeval time_out = {0, (2 * 1000)};
+        struct timeval time_out = {0, (50 * 1000)};
 
         // 创建本地客户端socket
         if ((socket_Taida_Pcs[pcs_num] = Create_Client_Socket(server_addr, time_out)) == -1) {
