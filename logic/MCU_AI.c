@@ -673,7 +673,21 @@ void MCU_AI_step(void)
      */
     if (rtb_Compare_m0)
     {
-        tmp_4 = (int32_T)MCU_AI_B.Min_d;
+        if (bms3_soc <= rtb_Min_ju)
+        {
+            tmp_4 = 0;
+        }
+        else
+        {
+            tmp_4 = (int32_T)bms3_max_discharge_power;
+        }
+        if (tmp_4 > ((int32_T)pcs2_rated_power/2))
+        {
+            tmp_4 = ((int32_T)pcs2_rated_power/2);
+        }
+        
+
+        //tmp_4 = (int32_T)MCU_AI_B.Min_d;
     }
     else
     {
@@ -709,7 +723,19 @@ void MCU_AI_step(void)
      */
     if (rtb_Compare_hr)
     {
-        tmp_7 = (int32_T)MCU_AI_B.Min_kv;
+        if (bms6_soc <= rtb_Min_ju)
+        {
+            tmp_7 = 0;
+        }
+        else
+        {
+            tmp_7 = (int32_T)bms6_max_discharge_power;
+        }
+        if (tmp_7 > ((int32_T)pcs3_rated_power/2))
+        {
+            tmp_7 = ((int32_T)pcs3_rated_power/2);
+        }
+        //tmp_7 = (int32_T)MCU_AI_B.Min_kv;
     }
     else
     {

@@ -106,13 +106,14 @@ for (int i = 0; i < p1->register_num; i++)
 
         SET_INPUT(index, RegVal.D16);
     }
-    else if (index == 27109)
+    //此处错误 大端高低寄存器应该调换，应该写到27110的bit11，note1是32位的双寄存器点位
+    else if (index == 27110)
     {
         // 清除收到的bit11
         RegVal.D16 &= (INT16U)~(1U << 11);
 
         // 保留本地由27131映射过来的bit11
-        RegVal.D16 |= GET_INPUT(27109) & (1U << 11);
+        RegVal.D16 |= GET_INPUT(27110) & (1U << 11);
 
         SET_INPUT(index, RegVal.D16);
        //  LOG_INFO("index:%d, value:%d\n", index, RegVal.D16);
@@ -121,14 +122,14 @@ for (int i = 0; i < p1->register_num; i++)
     {
         if ((RegVal.D16 & (1U << 11)) != 0U)
         {
-            // 收到的bit11为1，将27109的bit11置1
-            SET_INPUT(27109, GET_INPUT(27109) | (1U << 11));
+            // 收到的bit11为1，将27110的bit11置1
+            SET_INPUT(27110, GET_INPUT(27110) | (1U << 11));
         }
         else
         {
-            // 收到的bit11为0，将27109的bit11清零
-            SET_INPUT(27109,
-                      GET_INPUT(27109) & (INT16U)~(1U << 11));
+            // 收到的bit11为0，将27110的bit11清零
+            SET_INPUT(27110,
+                      GET_INPUT(27110) & (INT16U)~(1U << 11));
         }
 
         // 清除bit11后再存入27131

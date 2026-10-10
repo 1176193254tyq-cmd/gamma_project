@@ -6121,6 +6121,7 @@ while (1) {
                                         newv, 
                                         CMD_DELAY_200);
                     Control_Word1_Buf[pcs_num] = newv;
+                    LOG_INFO("pcs[%d] write heart, newv:%d", pcs_num, newv);
                 }
             }
 
